@@ -1,16 +1,18 @@
+import { RootState } from "@/util/store"
 import { toast } from "@/util/toast"
 import { router } from "expo-router"
 import React, { useEffect } from "react"
-import { useDispatch } from "react-redux"
-import { clearMessages } from "../store/messageSlice"
-import { clearRoom, setRoom } from "../store/roomSlice"
-import { clearUser, setUser } from "../store/userSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { setRoom } from "../store/roomSlice"
+import { setUser } from "../store/userSlice"
 import type { loginDataType } from "../types/types"
 import { socket } from "../util/socket"
 
 
 export default function useLoginSocketListeners(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
     const dispatch = useDispatch()
+    const user= useSelector((state:RootState)=>state.user.user)
+    const room= useSelector((state:RootState)=>state.room.room)
 
     function handleLogin(data:loginDataType){
         if (!data) return
@@ -23,9 +25,9 @@ export default function useLoginSocketListeners(setLoading:React.Dispatch<React.
 
     
     useEffect(()=>{
-        dispatch(clearMessages())
-        dispatch(clearRoom())
-        dispatch(clearUser())
+        // dispatch(clearMessages())
+        // dispatch(clearRoom())
+        // dispatch(clearUser())
     })
 
 

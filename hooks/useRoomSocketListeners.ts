@@ -1,9 +1,9 @@
-import glitchSound from "@/assets/audio//glitch.mp3"
-import pointObtainedAudio from "@/assets/audio//points-obtained.mp3"
-import clockTickUrgent from "@/assets/audio/clock-ticking-urgent.mp3"
-import clockTick from "@/assets/audio/clock-ticking.mp3"
-import joinAudio from "@/assets/audio/join.mp3"
-import Bell from "@/assets/audio/school_bell.mp3"
+// import glitchSound from "@/assets/audio//glitch.mp3"
+// import pointObtainedAudio from "@/assets/audio//points-obtained.mp3"
+// import clockTickUrgent from "@/assets/audio/clock-ticking-urgent.mp3"
+// import clockTick from "@/assets/audio/clock-ticking.mp3"
+// import joinAudio from "@/assets/audio/join.mp3"
+// import Bell from "@/assets/audio/school_bell.mp3"
 import { toast } from "@/util/toast"
 import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -103,16 +103,15 @@ export default function useRoomSocketListeners(){
             dispatch(clearMessages())
             toast.warn("Please, rejoin this room");
             router.replace("/login")   
-            window.location.href = "/"
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     },[room])
 
 
     useEffect(() => {
-        clockRef.current = new Audio(clockTick);
-        urgentRef.current = new Audio(clockTickUrgent);
-        bellRef.current = new Audio(Bell);
+        // clockRef.current = new Audio(clockTick);
+        // urgentRef.current = new Audio(clockTickUrgent);
+        // bellRef.current = new Audio(Bell);
 
         if (clockRef.current) {
             clockRef.current.loop = true;
@@ -129,8 +128,8 @@ export default function useRoomSocketListeners(){
         }
 
         return () => {
-            clockRef.current?.pause();
-            urgentRef.current?.pause();
+            // clockRef.current?.pause();
+            // urgentRef.current?.pause();
         };
     }, []);
 
@@ -166,8 +165,8 @@ export default function useRoomSocketListeners(){
 
         return () => {
             clearInterval(interval);
-            clockRef.current?.pause();
-            urgentRef.current?.pause();
+            // clockRef.current?.pause();
+            // urgentRef.current?.pause();
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
@@ -185,8 +184,6 @@ export default function useRoomSocketListeners(){
         }
     }, [timeLeft, session]);
 
-
-
     useEffect(() => {
         if (!showBanner) return;
         const timeout = setTimeout(() => {
@@ -203,6 +200,7 @@ export default function useRoomSocketListeners(){
         const validateToken = () => {
             const room = store.getState().room.room
             const user = store.getState().user.user
+            // console.log(user,room)
             if (room && user && room.token) {
                 socket.emit("validateToken", { cliqueName: room.name, username: user.name, token: room.token})
             }
@@ -213,7 +211,7 @@ export default function useRoomSocketListeners(){
         
 
         const handleUserJoined = (data: any) => {
-            playSound(joinAudio,1.0)
+            // playSound(joinAudio,1.0)
             toast.info(data.message)
             getFriendList()
         }
@@ -221,7 +219,7 @@ export default function useRoomSocketListeners(){
         socket.on("adminAssignment", handleUserJoined)
 
         const handleUserLeft = (data: any) => {
-            playSound(glitchSound,1.0)
+            // playSound(glitchSound,1.0)
             toast.info(data.message)
             getFriendList()
         }
@@ -267,7 +265,7 @@ export default function useRoomSocketListeners(){
             toast.info(data.adminMessage)
             setBannerMessage(data.message)
             setShowBanner(true)
-            playSound(pointObtainedAudio,1)
+            // playSound(pointObtainedAudio,1)
             // if (data.correctUser.id === user?.id){
             //     victoryConfetti()
             // }

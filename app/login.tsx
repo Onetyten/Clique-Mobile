@@ -6,10 +6,11 @@ import { useSocketContext } from "@/util/SocketContext";
 import { toast } from "@/util/toast";
 import { useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function Login() {
     const [username,setUserName] = useState("")
-    const [focused, setFocused] = useState<string | null>(null);
     const [cliqueName,setCliqueName] = useState("")
     const [cliqueKey,setCliqueKey] = useState("")
     const {loading,setLoading} = useSocketContext()
@@ -34,7 +35,7 @@ export default function Login() {
     }
 
   return (
-    <View style={styles.background}>
+    <SafeAreaView style={styles.background}>
 
         <View style = {styles.container}>
             {loading && (
@@ -63,14 +64,17 @@ export default function Login() {
                   </TouchableOpacity>
               </View>
 
+              
               <TouchableOpacity disabled={loading} onPress={HandleCreateRoom} style={{...styles.Button,backgroundColor:colors.success,width:"100%" }}>
                 <Text style={{color:colors.primary, ...GlobalStyle.semibold_body,}} >Create Clique</Text>
               </TouchableOpacity>
+         
+              
             </View>
             
         </View>
 
-    </View>
+    </SafeAreaView>
   );
 }
 

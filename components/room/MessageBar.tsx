@@ -8,8 +8,9 @@ import { toast } from "@/util/toast";
 import { Audio } from "expo-av";
 import { MessageSquare, Mic, Send, Zap } from "lucide-react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Input from "./Input";
 
 interface PropType {
   isAdmin: boolean;
@@ -150,7 +151,8 @@ export default function MessageBar({ isAdmin,setChatMode,chatMode,setShowMessage
         </View>
 
         <View style={styles.inputWrapper}>
-            <TextInput placeholder="Type a message" placeholderTextColor={colors.muted} value={message} onChangeText={setMessage} style={[styles.input, GlobalStyle.poppins_body]} />
+            <Input value={message} setValue={setMessage} placeholder="Type a message" />
+
             {message.trim().length > 0 && (
             <TouchableOpacity style={styles.sendButton} onPress={submitMessage} >
                 <Send size={22} color={colors.blurple} />

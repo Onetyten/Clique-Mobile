@@ -49,7 +49,6 @@ export default function Toolbar({ setOpenSidebar, timeLeft }: PropType) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    paddingTop:32,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

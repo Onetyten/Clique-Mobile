@@ -86,9 +86,10 @@ const styles = StyleSheet.create({
     height: "100%",
     backgroundColor: colors.primary,
     padding: 24,
+    paddingTop:60
   },
 
   content: {
-    paddingBottom: 40,
+    paddingBottom: 20,
   },
 });

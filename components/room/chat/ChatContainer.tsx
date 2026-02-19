@@ -1,15 +1,23 @@
-import { View, Text, FlatList, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import { GlobalStyle } from "@/styles/global";
+import { messageType } from "@/types/types";
 import type { RootState } from "@/util/store";
+import { useEffect, useRef } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
 import MessageBubble from "./MessageBubble";
 
 export default function ChatContainer() {
   const messages = useSelector((state: RootState) => state.messages.messages);
   const user = useSelector((state: RootState) => state.user.user);
+  const scrollRef = useRef<FlatList<messageType>|null>(null)
+
+  useEffect(()=>{
+    scrollRef.current?.scrollToEnd({animated:true})
+  },[messages.length])
 
   return (
     <View style={styles.container}>
-      <FlatList data={messages} keyExtractor={(item) => item.id} contentContainerStyle={styles.content}
+      <FlatList ref={scrollRef} data={messages} keyExtractor={(item) => item.id} contentContainerStyle={styles.content}
         renderItem={({ item }) => {
           const isMe = item.user.id === user?.id;
 
@@ -53,8 +61,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   avatarText: {
+    textTransform:"uppercase",
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+    ...GlobalStyle.bold_button,
   },
 });

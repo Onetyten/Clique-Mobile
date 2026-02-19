@@ -1,5 +1,6 @@
 import Banner from "@/components/room/Banner";
 import ChatContainer from "@/components/room/chat/ChatContainer";
+import Confetti from "@/components/room/Confetti";
 import Glow from "@/components/room/glow";
 import MessageBar from "@/components/room/MessageBar";
 import QuestionForm from "@/components/room/QuestionForm";
@@ -11,7 +12,7 @@ import { colors } from "@/styles/global";
 import { roleID } from "@/util/role";
 import { RootState } from '@/util/store';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
@@ -19,12 +20,15 @@ const Room = () => {
     const user = useSelector((state:RootState)=>state.user.user)
     const session = useSelector((state:RootState)=>state.session.session)
     const [sidebarOpened,setOpenSidebar] = useState(false)
-    const {friendList,setQuestionLoading,questionLoading,bannerMessage,triesLeft,setTriesLeft,showBanner,timeLeft,showQuestionForm,setShowQuestionForm} = useRoomSocketListeners()
+    const {friendList,setQuestionLoading,questionLoading,bannerMessage,triesLeft,setTriesLeft,showBanner,timeLeft,showQuestionForm,setShowQuestionForm,showConfetti} = useRoomSocketListeners()
     const isAdmin = user?.role === roleID.admin
     const [canAnswer,setCanAnswer] = useState(false)
     const [chatMode,setChatMode] = useState<"chat" | "answer">("chat")
     const role = user?.role
     const [showMessageLoader,setShowMessageLoader] = useState(false)
+
+    const { height } = useWindowDimensions();
+    const shouldAvoidKeyboard = height > 480;
 
 
     useEffect(()=>{
@@ -35,26 +39,29 @@ const Room = () => {
 
   return (
     <SafeAreaView style={styles.root} >
+        <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === "ios" ? "height" : "height"} enabled={shouldAvoidKeyboard}>
 
-        {showBanner && <Banner bannerMessage={bannerMessage}/>}
+            {showBanner && <Banner bannerMessage={bannerMessage}/>}
 
-        <View style={[styles.root,{position: "relative"}]} >
-            <Toolbar timeLeft={timeLeft} setOpenSidebar={setOpenSidebar}/>
-            {sidebarOpened && <Sidebar friendList={friendList} sidebarOpened={sidebarOpened} setOpenSidebar={setOpenSidebar}/>}
+            <View style={[styles.root,{position: "relative"}]} >
+                <Toolbar timeLeft={timeLeft} setOpenSidebar={setOpenSidebar}/>
+                {sidebarOpened && <Sidebar friendList={friendList} sidebarOpened={sidebarOpened} setOpenSidebar={setOpenSidebar}/>}
 
-            <View style={styles.pulseWrapper} pointerEvents="none">
-                <Glow size={360} timeLeft={timeLeft} />
+                <View style={styles.pulseWrapper} pointerEvents="none">
+                    <Glow size={360} timeLeft={timeLeft} />
+                </View>
+
+                <Vignette/>
+
+                <ChatContainer/>
+                {showConfetti && <Confetti/>}
+
+                <MessageBar setShowQuestionForm={setShowQuestionForm} showMessageLoader={showMessageLoader} setShowMessageLoader={setShowMessageLoader} triesLeft={triesLeft} setTriesLeft={setTriesLeft} isAdmin={isAdmin} canAnswer={canAnswer} setCanAnswer={setCanAnswer} chatMode={chatMode} setChatMode={setChatMode} />
+
+                {showQuestionForm && user?.role === roleID.admin && session === null && <QuestionForm setQuestionLoading={setQuestionLoading} questionLoading={questionLoading} setShowQuestionForm={setShowQuestionForm}/>}
+                
             </View>
-
-            <Vignette/>
-
-            <ChatContainer/>
-
-            <MessageBar setShowQuestionForm={setShowQuestionForm} showMessageLoader={showMessageLoader} setShowMessageLoader={setShowMessageLoader} triesLeft={triesLeft} setTriesLeft={setTriesLeft} isAdmin={isAdmin} canAnswer={canAnswer} setCanAnswer={setCanAnswer} chatMode={chatMode} setChatMode={setChatMode} />
-
-            {showQuestionForm && user?.role === roleID.admin && session === null && <QuestionForm setQuestionLoading={setQuestionLoading} questionLoading={questionLoading} setShowQuestionForm={setShowQuestionForm}/>}
-            
-        </View>
+        </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -67,6 +74,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.secondary,
         flex: 1,
         width: "100%",
+        position: "relative"
     },
   
     pulseWrapper:{

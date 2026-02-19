@@ -2,7 +2,7 @@
 import { RootState } from "@/util/store";
 import React, { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withSequence, withTiming } from "react-native-reanimated";
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { useSelector } from "react-redux";
 
@@ -15,10 +15,11 @@ export default function Vignette() {
     useEffect(() => {
         const lastMessage = messages[messages.length - 1];
         if (!lastMessage || lastMessage.type !== "wrong" || lastMessage.user.id !== user?.id) return;
-
-        opacity.value = withTiming(1, { duration: 150, easing: Easing.out(Easing.ease) }, () => {
-            opacity.value = withTiming(0, { duration: 400, easing: Easing.in(Easing.ease) });
-        });
+        
+        opacity.value = withSequence(
+            withTiming(1, { duration: 150, easing: Easing.out(Easing.ease) }),
+            withTiming(0, { duration: 400, easing: Easing.in(Easing.ease) })
+        );
     }, [messages]);
 
     const animatedStyle = useAnimatedStyle(() => ({

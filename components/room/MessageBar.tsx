@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 
 import { addMessage, newMessageType } from "@/store/messageSlice";
 import { colors, GlobalStyle } from "@/styles/global";

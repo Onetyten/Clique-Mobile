@@ -46,13 +46,13 @@ export default Banner
 
 const style = StyleSheet.create({
     parent:{
-        position:"fixed",
+        position:"absolute",
         width:"100%",
         height:"100%",
         justifyContent:"center",
         alignItems:"center",
         zIndex:40,
-        backgroundColor:colors.primary+"40"
+        backgroundColor:colors.primary+"CC"
     },
     banner:{
         padding:48,

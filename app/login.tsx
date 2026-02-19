@@ -5,7 +5,7 @@ import { socket } from "@/util/socket";
 import { useSocketContext } from "@/util/SocketContext";
 import { toast } from "@/util/toast";
 import { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -15,6 +15,9 @@ export default function Login() {
     const [cliqueKey,setCliqueKey] = useState("")
     const {loading,setLoading} = useSocketContext()
     useLoginSocketListeners(setLoading)
+
+    const { height } = useWindowDimensions();
+    const shouldAvoidKeyboard = height > 480;
 
     async function HandleJoinRoom(){
         if (loading) return
@@ -36,44 +39,44 @@ export default function Login() {
 
   return (
     <SafeAreaView style={styles.background}>
-
-        <View style = {styles.container}>
-            {loading && (
-                <View style={styles.loaderContainer}>
-                    <ActivityIndicator size={50} color={colors.text} />
-                </View>
-            )}
-
-            <View  style={{width:"100%",gap:8,justifyContent:"center",alignItems:"center"}}>
-              <Text style={styles.HeaderText}>Clique</Text>
-              <Text style={styles.subHeaderText} >Join a Clique or start your own</Text>
-            </View>
-
-            <View  style={{width:"100%",gap:8,justifyContent:"center",alignItems:"center"}}>
-              <Input value={username} setValue={setUserName} placeholder="Name"/>
-              <Input value={cliqueName} setValue={setCliqueName} placeholder="Clique Name"/>
-      
-              <View style={{flexDirection:"row",width:"100%",gap:12,justifyContent:"center",alignItems:"center"}} className="flex w-full sm:w-sm gap-2">
-
-                  <View style={{position:"relative",flex:1}}>
-                    <Input value={cliqueKey} setValue={setCliqueKey} placeholder="# key" isPassword/>
+       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "padding"} enabled={shouldAvoidKeyboard} style={{ width: "100%", flex: 1, justifyContent: "center", alignItems: "center" }} >
+            <View style = {styles.container}>
+              {loading && (
+                  <View style={styles.loaderContainer}>
+                      <ActivityIndicator size={50} color={colors.text} />
                   </View>
-                  
-                  <TouchableOpacity style={{...styles.Button,backgroundColor:colors.blurple,width:"50%" }} onPress={HandleJoinRoom} >
-                    <Text style={{color:"#fff", ...GlobalStyle.semibold_body,}}>Join Clique</Text>
-                  </TouchableOpacity>
+              )}
+
+              <View  style={{width:"100%",gap:8,justifyContent:"center",alignItems:"center"}}>
+                <Text style={styles.HeaderText}>Clique</Text>
+                <Text style={styles.subHeaderText} >Join a Clique or start your own</Text>
               </View>
 
-              
-              <TouchableOpacity disabled={loading} onPress={HandleCreateRoom} style={{...styles.Button,backgroundColor:colors.success,width:"100%" }}>
-                <Text style={{color:colors.primary, ...GlobalStyle.semibold_body,}} >Create Clique</Text>
-              </TouchableOpacity>
-         
-              
-            </View>
-            
-        </View>
+              <View  style={{width:"100%",gap:8,justifyContent:"center",alignItems:"center"}}>
+                <Input value={username} setValue={setUserName} placeholder="Name"/>
+                <Input value={cliqueName} setValue={setCliqueName} placeholder="Clique Name"/>
+        
+                <View style={{flexDirection:"row",width:"100%",gap:12,justifyContent:"center",alignItems:"center"}} className="flex w-full sm:w-sm gap-2">
 
+                    <View style={{position:"relative",flex:1}}>
+                      <Input value={cliqueKey} setValue={setCliqueKey} placeholder="# key" isPassword/>
+                    </View>
+                    
+                    <TouchableOpacity style={{...styles.Button,backgroundColor:colors.blurple,width:"50%" }} onPress={HandleJoinRoom} >
+                      <Text style={{color:"#fff", ...GlobalStyle.semibold_body,}}>Join Clique</Text>
+                    </TouchableOpacity>
+                </View>
+
+                
+                <TouchableOpacity disabled={loading} onPress={HandleCreateRoom} style={{...styles.Button,backgroundColor:colors.success,width:"100%" }}>
+                  <Text style={{color:colors.primary, ...GlobalStyle.semibold_body,}} >Create Clique</Text>
+                </TouchableOpacity>
+                
+              </View>
+              
+          </View>
+        </KeyboardAvoidingView>
+        
     </SafeAreaView>
   );
 }
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
   background:{
     backgroundColor:colors.secondary,
     height:"100%",
+    width:"100%",
     justifyContent:"center",
     alignItems:"center"
   },

@@ -1,4 +1,4 @@
-/* eslint-disable import/no-unresolved */
+ 
 import { addMessage, type newMessageType } from "@/store/messageSlice";
 import { colors, GlobalStyle } from "@/styles/global";
 import { roleID } from "@/util/role";
@@ -6,8 +6,9 @@ import { socket } from "@/util/socket";
 import type { RootState } from "@/util/store";
 import { toast } from "@/util/toast";
 import React, { useState } from "react";
-import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Input from "../login/Input";
 
 interface PropType {
   setShowQuestionForm: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,57 +42,74 @@ export default function QuestionForm({ setShowQuestionForm, questionLoading, set
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={styles.overlay} >
-      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={() => setShowQuestionForm(false)}>
-        <TouchableOpacity activeOpacity={1} onPress={() => {}} style={styles.modal}>
-          <Text style={[GlobalStyle.bold_h2, styles.title]}>Question</Text>
+ <TouchableWithoutFeedback onPress={()=>setShowQuestionForm(false)}>
+    <View style={styles.overlay}>
+      <TouchableWithoutFeedback onPress={(e)=>e.stopPropagation()}>
+          <View style={styles.modal}>
+            <Text style={[GlobalStyle.bold_button,{color:colors.text}]} className="text-2xl sm:text-5xl font-bold">Question</Text>
 
-          {questionLoading ? (
-            <View style={styles.loadingContainer}>
-              <View style={styles.loadingTextContainer}>
-                <Text style={[GlobalStyle.poppins_body, { color: colors.text }]}>
-                  Question: <Text style={{ color: colors.text }}>{question}</Text>
-                </Text>
-                <Text style={[GlobalStyle.poppins_body, { color: colors.text }]}>
-                  Answer: <Text style={{ color: colors.text }}>{answer}</Text>
-                </Text>
+             {questionLoading ? (
+                <View style={styles.loadingContainer}>
+                  <View style={styles.loadingTextContainer}>
+
+                    <Text style={[GlobalStyle.poppins_body, { color: colors.text }]}>
+                      Question: <Text style={{ color: colors.text }}>{question}</Text>
+                    </Text>
+
+                    <Text style={[GlobalStyle.poppins_body, { color: colors.text }]}>
+                      Answer: <Text style={{ color: colors.text }}>{answer}</Text>
+                    </Text>
+                  </View>
+                  <ActivityIndicator size="large" color={colors.blurple} />
+                </View>
+            ) : (
+              <View style={{ width: "100%",gap:10 }}>
+                
+                <Input value={question} setValue={setQuestion} placeholder="Question"/>
+                <Input value={answer} setValue={setAnswer} placeholder="Answer"/>
+
+                <View style={styles.buttonsContainer}>
+                  <TouchableOpacity onPress={askQuestion} disabled={questionLoading} style={[styles.button, { backgroundColor: colors.success }]} >    
+                      <Text style={[GlobalStyle.bold_body, { color: colors.primary }]}>Ask</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => setShowQuestionForm(false)} style={[styles.button, { backgroundColor: colors.danger }]}>
+                    <Text style={[GlobalStyle.bold_body, { color: colors.primary }]}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <ActivityIndicator size="large" color={colors.blurple} />
-            </View>
-          ) : (
-            <View style={{ width: "100%" }}>
-              <TextInput placeholder="Question" value={question} onChangeText={setQuestion} multiline style={[styles.textInput, { minHeight: 80, maxHeight: 150 }]} placeholderTextColor={colors.muted} />
-
-              <TextInput placeholder="Answer" value={answer} onChangeText={setAnswer} style={[styles.textInput, { height: 56 }]} placeholderTextColor={colors.muted} />
-
-              <View style={styles.buttonsContainer}>
-                <TouchableOpacity onPress={askQuestion} disabled={questionLoading} style={[styles.button, { backgroundColor: colors.success }]} >
-                    <Text style={[GlobalStyle.bold_body, { color: colors.success }]}>Ask</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => setShowQuestionForm(false)} style={[styles.button, { backgroundColor: colors.danger }]}>
-                  <Text style={[GlobalStyle.bold_body, { color: colors.danger }]}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
           )}
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+           
+            
+
+
+          </View>
+
+        </TouchableWithoutFeedback>
+
+    </View>
+  </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: colors.primary + "AA", // semi-transparent
+    position:"absolute",
+    top:0,
+    zIndex:20,
+    height:"100%",
+    left:0,
+    backgroundColor: colors.primary+"AA",
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
   },
 
   modal: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.primary,
+    borderWidth:2,
+    borderColor:colors.blurple,
     padding: 20,
     borderRadius: 6,
     width: "90%",

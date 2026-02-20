@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Clique-Mobile",
+    "name": "Clique",
     "slug": "Clique-Mobile",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "cliquemobile",
     "userInterfaceStyle": "automatic",
@@ -33,9 +33,9 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#23272A",
           "dark": {
-            "backgroundColor": "#000000"
+            "backgroundColor": "#23272A"
           }
         }
       ],

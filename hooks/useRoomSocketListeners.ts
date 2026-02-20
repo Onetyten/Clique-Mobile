@@ -84,19 +84,27 @@ export default function useRoomSocketListeners(){
         }
     },[room])
 
+    useEffect(() => {
+        if (!showBanner) return;
+        const timeout = setTimeout(() => {
+            setShowBanner(false);
+        }, 3000);
+
+        return () => clearTimeout(timeout);
+    }, [showBanner]);
 
     useEffect(() => {
-        clockPlayer.loop = true;
-        clockPlayer.volume = 0.4;
-        clockUrgentPlayer.loop = true;
-        clockUrgentPlayer.volume = 0.6;
-        bellPlayer.volume = 0.8;
-    }, []);
+        if (!showConfetti) return;
+        const timeout = setTimeout(() => {
+            setShowConfetti(false);
+        }, 6000);
+
+        return () => clearTimeout(timeout);
+    }, [showConfetti]);
 
     useEffect(()=>{
         getFriendList()
     },[])
-
 
     useEffect(() => {
         clockPlayer.loop = true;
@@ -122,14 +130,6 @@ export default function useRoomSocketListeners(){
 
                 if (prev <= 1) {
                     clearInterval(interval);
-                    clockPlayer.pause();
-                    clockUrgentPlayer.pause();
-                    clockUrgentPlayer.seekTo(0);
-                    bellPlayer.seekTo(0);
-                    bellPlayer.play();
-                    dispatch(clearSession());
-                    setBannerMessage("Time's Up");
-                    setShowBanner(true);
                     return 0;
                 }
                 return prev - 1;
@@ -142,6 +142,18 @@ export default function useRoomSocketListeners(){
             clockUrgentPlayer.pause();
         };
     }, [session]);
+
+    useEffect(() => {
+        if (timeLeft !== 0 || !session) return;
+        clockPlayer.pause();
+        clockUrgentPlayer.pause();
+        clockUrgentPlayer.seekTo(0);
+        bellPlayer.seekTo(0);
+        bellPlayer.play();
+        dispatch(clearSession());
+        setBannerMessage("Time's Up");
+        setShowBanner(true);
+    }, [timeLeft]);
     
 
 

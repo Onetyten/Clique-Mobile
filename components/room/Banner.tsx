@@ -36,7 +36,7 @@ const Banner = ({bannerMessage}:propType) => {
   return (
     <View style={style.parent}>
         <Animated.View style={[style.banner,bgStyle]}>
-            <Animated.Text style={[{...GlobalStyle.bold_button,color:"#fff"},textStyle]}>{bannerMessage}</Animated.Text>
+            <Animated.Text style={[{...GlobalStyle.bold_button,color:"#fff",textAlign:"center"},textStyle]}>{bannerMessage}</Animated.Text>
         </Animated.View>
     </View>
   )

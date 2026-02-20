@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
   },
 
   questionText: {
+     ...GlobalStyle.poppins_body,
     color: colors.text,
     flexShrink: 1,
   },

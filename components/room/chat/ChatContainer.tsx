@@ -2,38 +2,41 @@ import { GlobalStyle } from "@/styles/global";
 import { messageType } from "@/types/types";
 import type { RootState } from "@/util/store";
 import { useEffect, useRef } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
-import MessageBubble from "./MessageBubble";
+import MessageRender from "./MessageRender";
+
 
 export default function ChatContainer() {
   const messages = useSelector((state: RootState) => state.messages.messages);
   const user = useSelector((state: RootState) => state.user.user);
   const scrollRef = useRef<FlatList<messageType>|null>(null)
+  const contentHeightRef = useRef(0);
+  const containerHeightRef = useRef(0);
 
-  useEffect(()=>{
-    scrollRef.current?.scrollToEnd({animated:true})
-  },[messages.length])
+
+
+  useEffect(() => {
+      const totalOffset = contentHeightRef.current - containerHeightRef.current;
+      if (totalOffset > 0) {
+          scrollRef.current?.scrollToOffset({ offset: totalOffset, animated: true });
+      }
+  }, [messages.length]);
+
+  if (!user?.id) return
 
   return (
-    <View style={styles.container}>
-      <FlatList ref={scrollRef} data={messages} keyExtractor={(item) => item.id} contentContainerStyle={styles.content}
-        renderItem={({ item }) => {
-          const isMe = item.user.id === user?.id;
-
-          return (
-            <View style={[ styles.row, { justifyContent: isMe ? "flex-end" : "flex-start" }]} >
-              {!isMe && (
-                <View style={[ styles.avatar, { backgroundColor: item.user.hex_code }]}>
-                  <Text style={styles.avatarText}>
-                    {item.user.name.slice(0, 1)}
-                  </Text>
-                </View>
-              )}
-              <MessageBubble userId={user?.id} text={item} />
-            </View>
-          );
-        }}
+    <View style={styles.container}  onLayout={(e) => { containerHeightRef.current = e.nativeEvent.layout.height; }}>
+      <FlatList ref={scrollRef} data={messages}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.content}
+          onContentSizeChange={(_, h) => { contentHeightRef.current = h; }}
+          renderItem={({item}) => <MessageRender item={item} userId={user.id} />}
+          showsVerticalScrollIndicator={false}
+          removeClippedSubviews={false}
+          maxToRenderPerBatch={16}
+          windowSize={11}
+          updateCellsBatchingPeriod={16}
       />
     </View>
   );

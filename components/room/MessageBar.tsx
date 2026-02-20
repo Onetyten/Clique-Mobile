@@ -1,15 +1,18 @@
 
+import glitchAudio from "@/assets/audio/glitch.mp3";
 import { addMessage, newMessageType } from "@/store/messageSlice";
 import { colors, GlobalStyle } from "@/styles/global";
 import { socket } from "@/util/socket";
 import type { RootState } from "@/util/store";
 import { toast } from "@/util/toast";
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import { MessageSquare, Mic, Send, Zap } from "lucide-react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import Input from "./Input";
+
+
 
 interface PropType {
   isAdmin: boolean;
@@ -29,22 +32,7 @@ export default function MessageBar({ isAdmin,setChatMode,chatMode,setShowMessage
   const user = useSelector((state: RootState) => state.user.user);
   const session = useSelector((state: RootState) => state.session.session);
   const dispatch = useDispatch();
-  const glitchSound = useRef<Audio.Sound | null>(null);
-
-  useEffect(() => {
-    (async () => {
-      const { sound } = await Audio.Sound.createAsync( require("@/assets/audio/glitch.mp3") )
-      glitchSound.current = sound;
-    })();
-
-    return () => {
-      glitchSound.current?.unloadAsync();
-    };
-  }, []);
-
-  const playGlitch = async () => {
-    await glitchSound.current?.replayAsync();
-  };
+  const glitchPlayer = useAudioPlayer(glitchAudio) 
 
 
   function chatMessage() {
@@ -67,13 +55,15 @@ export default function MessageBar({ isAdmin,setChatMode,chatMode,setShowMessage
 
     if (!session) {
       setChatMode("chat");
-      await playGlitch();
+      glitchPlayer.seekTo(0)
+      glitchPlayer.play()
       toast.info("Please wait until the game starts");
       return;
     }
 
     if (triesLeft <= 0) {
-      await playGlitch();
+      glitchPlayer.seekTo(0)
+      glitchPlayer.play()
       toast.warn("You have used up your attempts");
       return;
     }

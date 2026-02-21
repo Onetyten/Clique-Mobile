@@ -35,7 +35,7 @@ export default function RootLayout() {
     <PersistGate persistor={persistor}>
       <SocketProvider>
         <Stack screenOptions={{ headerShown:false, contentStyle:{backgroundColor:colors.secondary}}}>
-          <Stack.Screen name="login"/>
+          <Stack.Screen name="index"/>
           <Stack.Screen name="room"/>
         </Stack>
         <Toast/>

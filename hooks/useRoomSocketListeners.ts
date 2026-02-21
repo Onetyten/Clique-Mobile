@@ -80,7 +80,7 @@ export default function useRoomSocketListeners(){
             dispatch(clearRoom())
             dispatch(clearMessages())
             toast.warn("Please, rejoin this room");
-            router.replace("/login")   
+            router.replace("/")   
         }
     },[room])
 

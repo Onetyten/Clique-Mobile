@@ -11,8 +11,6 @@ import { socket } from "../util/socket"
 
 export default function useLoginSocketListeners(setLoading:React.Dispatch<React.SetStateAction<boolean>>){
     const dispatch = useDispatch()
-    const user= useSelector((state:RootState)=>state.user.user)
-    const room= useSelector((state:RootState)=>state.room.room)
 
     function handleLogin(data:loginDataType){
         if (!data) return

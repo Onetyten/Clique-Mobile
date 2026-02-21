@@ -7,7 +7,7 @@ const COLORS = ["#5865F2", "#57F287"];
 const DURATION = 4000;
 const BURST_INTERVAL = 200;
 const BURSTS = Math.floor(DURATION / BURST_INTERVAL);
-const PARTICLES_PER_BURST = 5;
+const PARTICLES_PER_BURST = 4;
 
 function randomBetween(min: number, max: number) {
     return Math.random() * (max - min) + min;

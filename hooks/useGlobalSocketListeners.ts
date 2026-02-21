@@ -39,7 +39,7 @@ export default function useGlobalSocketListeners(){
             dispatch(clearRoom())
             dispatch(clearMessages())
             setTimeout(() => {
-                router.replace("/login")
+                router.replace("/")
             }, 1500);
         })
 

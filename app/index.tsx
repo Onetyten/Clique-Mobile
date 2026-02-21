@@ -9,7 +9,7 @@ import { ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Text, To
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
-export default function Login() {
+export default function Index() {
     const [username,setUserName] = useState("")
     const [cliqueName,setCliqueName] = useState("")
     const [cliqueKey,setCliqueKey] = useState("")
